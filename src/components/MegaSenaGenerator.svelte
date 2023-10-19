@@ -2,13 +2,20 @@
 	let methods: string[] = ["Método Pseudoaleatório", "Método de Entropia Física"];
 	let currentIndex: number = 0;
 	let generatedNumbers: number[] = [];
+	let showHint: boolean = false;
 
 	function prevMethod(): void {
 		currentIndex = (currentIndex - 1 + methods.length) % methods.length;
+		showHint = false; // Reset hint visibility when changing method
 	}
 
 	function nextMethod(): void {
 		currentIndex = (currentIndex + 1) % methods.length;
+		showHint = false; // Reset hint visibility when changing method
+	}
+
+	function toggleHint(): void {
+		showHint = !showHint;
 	}
 
 	function generateNumbers(): void {
@@ -27,25 +34,35 @@
 				generatedNumbers.push(Math.floor(random * 60) + 1);
 			}
 		}
-		console.log("Método utilizado:", method);
-		console.log("Números gerados:", generatedNumbers);
 	}
 </script>
 
-<div class="container">
-	<div class="method-selector">
-		<button on:click={prevMethod}>Prev</button>
-		<div>{methods[currentIndex]}</div>
-		<button on:click={nextMethod}>Next</button>
-	</div>
+<div class="wrapper">
+	<div class="container">
+		<div class="method-selector">
+			<button on:click={prevMethod}>Prev</button>
+			<div class="method-name" on:click={toggleHint}>{methods[currentIndex]}</div>
+			<button on:click={nextMethod}>Next</button>
+		</div>
 
-	<div class="numbers">
-		{#each [0, 1, 2, 3, 4, 5] as index}
-			<div class="number">{generatedNumbers[index] || "?"}</div>
-		{/each}
-	</div>
+		{#if showHint}
+			<div class="hint visible">
+				{#if methods[currentIndex] === "Método Pseudoaleatório"}
+					Este método utiliza a função Math.random() para gerar números pseudoaleatórios.
+				{:else if methods[currentIndex] === "Método de Entropia Física"}
+					Este método utiliza uma semente baseada no tempo atual para gerar números aleatórios.
+				{/if}
+			</div>
+		{/if}
 
-	<button on:click={generateNumbers}>Gerar Números</button>
+		<div class="numbers">
+			{#each [0, 1, 2, 3, 4, 5] as index}
+				<div class="number">{generatedNumbers[index] || "?"}</div>
+			{/each}
+		</div>
+
+		<button on:click={generateNumbers}>Gerar Números</button>
+	</div>
 </div>
 
 <style lang="scss">
@@ -54,18 +71,23 @@
 	* {
 		font-family: "Archivo Narrow", sans-serif;
 	}
-    
+
+	.wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100vw;
+		height: 100vh;
+		background-color: #f4f2e1;
+	}
+
 	.container {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		gap: 20px;
-	}
-
-	.method-selector {
-		display: flex;
-		align-items: center;
-		gap: 10px;
+		text-align: center;
+		color: #174149;
 	}
 
 	button {
@@ -79,6 +101,39 @@
 
 		&:hover {
 			background-color: darken(#174149, 10%);
+		}
+	}
+
+	.method-selector {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.method-name {
+		cursor: pointer;
+		position: relative;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
+	.hint {
+		display: none;
+		background-color: rgba(23, 65, 73, 0.8);
+		color: #f4f2e1;
+		padding: 10px;
+		border-radius: 5px;
+		position: absolute;
+		top: 60px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 300px;
+		text-align: center;
+
+		&.visible {
+			display: block;
 		}
 	}
 
