@@ -54,17 +54,7 @@
 	* {
 		font-family: "Archivo Narrow", sans-serif;
 	}
-
-	body {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		height: 100vh;
-		background-color: #ffe600;
-		color: #174149;
-	}
-
+    
 	.container {
 		display: flex;
 		flex-direction: column;
